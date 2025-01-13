@@ -1,0 +1,83 @@
+                  
+1-# Retrieve the names and contact details of all drivers with a rating of 4.5 or higher.
+
+SELECT D.DriverID,D.Phone,D.Rating
+FROM drivers d
+WHERE Rating >= 4.5;
+
+2-# Find the total number of rides completed by each driver.
+
+SELECT d.driverid,d.FirstName,COUNT(r.ridestatus)
+FROM drivers d
+INNER JOIN rides r
+ON r.DriverID=d.DriverID
+WHERE RideStatus='Completed'
+GROUP BY driverid
+;
+
+3-
+
+4-
+# Calculate the total earnings of each driver from completed rides.
+
+SELECT driverid,p.amount,sum(p.amount),COUNT(ridestatus)
+FROM rides r
+INNER JOIN payments p
+ON p.RideID=r.DriverID
+WHERE ridestatus='Completed'
+GROUP BY driverid;
+
+5-
+# Retrieve the most recent ride for each rider.
+
+SELECT r.riderid, r.rideid, r.ridedate
+FROM rides r
+INNER JOIN (
+    SELECT riderid, MAX(ridedate) AS latestridedate
+    FROM rides
+    GROUP BY riderid) latestrides ON r.riderid = latestrides.riderid 
+AND r.ridedate = latestrides.latestridedate;
+
+6-
+# Count the number of rides taken in each city.
+
+SELECT city,COUNT(RideID)
+FROM rides r
+INNER JOIN riders Ri 
+ON r.RiderID=ri.RiderID
+GROUP BY city;
+
+7-
+# List all rides where the distance was greater than 20 km.
+
+SELECT *
+FROM rides
+WHERE Distance>=20;
+
+8-
+# Identify the most preferred payment method.
+SELECT paymentmethod, COUNT(paymentid)
+FROM payments
+GROUP BY paymentmethod
+LIMIT 1;
+
+9-
+
+
+SELECT d.FirstName, SUM(fare) AS totalearnings
+FROM drivers d 
+JOIN rides r
+ON d.driverid = r.driverid 
+GROUP BY d.FirstName 
+ORDER BY `totalearnings` 
+DESC LIMIT 3;
+
+10-
+# Retrieve details of all cancelled rides along with the rider's and driver's names.
+
+SELECT  r.RideID,r.RiderID,CONCAT (rd.FirstName,rd.LastName) RiderName,r.DriverID,CONCAT(d.FirstName,d.FirstName) DriverName ,r.RideStatus
+FROM rides r
+INNER JOIN riders rd ON r.RiderID=rd.RiderID
+INNER JOIN drivers d on r.DriverID=d.DriverID
+WHERE r.RideStatus='cancelled'; 
+

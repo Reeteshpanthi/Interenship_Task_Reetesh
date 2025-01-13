@@ -1,0 +1,82 @@
+1-
+SELECT customer_id,COUNT(order_id)
+FROM orders
+GROUP BY customer_id;
+
+2-
+
+SELECT p.product_id,p.product_name,p.price,
+SUM(oi.quantity * p.price) AS total_revenue
+FROM products p
+JOIN orderdetails oi 
+ON p.product_id = oi.product_id
+GROUP BY p.product_id, p.product_name, p.price;
+
+
+3-
+SELECT p.product_name , MAX(od.unit_price)
+FROM orderdetails od
+INNER JOIN products p
+ON od.product_id=p.product_id
+GROUP BY p.product_name
+order BY unit_price desc
+LIMIT 1;
+
+
+4-
+
+SELECT c.customer_id,c.first_name,o.order_date
+FROM customers c
+INNER JOIN orders o
+on c.customer_id-o.customer_id
+WHERE o.order_date>=CURRENT_DATE-INTERVAL 30 day;
+
+
+ # 5-Calculate the Total Amount Paid by Each Customer
+ 
+ SELECT c.customer_id,c.first_name,c.last_name,c.phone,o.total_amount
+ FROM customers c
+ INNER join orders o
+ on c.customer_id=o.customer_id;
+
+6-
+# Get the Number of Products Sold by Category
+
+SELECT p.category, SUM(od.quantity) AS total_products_sold
+FROM OrderDetails od
+JOIN Products p ON od.product_id = p.product_id
+GROUP BY p.category;
+
+7-
+ # List All Orders That Are Pending (i.e., Orders that haven't been shipped yet)
+ 
+ SELECT o.order_id,o.order_status
+ FROM orders o
+ WHERE order_status='Pending';
+
+8-
+# Find the Average Order Value (Total Order Amount / Number of Orders)
+
+SELECT sum(total_amount),COUNT(order_id), 
+SUM(total_amount) / COUNT(order_id) AS avg_of_order_value
+FROM orders;
+
+
+9-
+# List the Top 5 Customers Who Have Spent the Most Money
+
+SELECT o.customer_id,c.first_name,o.total_amount
+FROM orders o
+INNER JOIN customers c
+ON o.customer_id=c.customer_id
+ORDER by total_amount desc
+LIMIT 5;
+
+10-
+SELECT p.product_id,p.product_name
+FROM products p
+left JOIN orderdetails od
+ON p.product_id = od.product_id
+WHERE p.product_id IS NULL;
+
+ 
